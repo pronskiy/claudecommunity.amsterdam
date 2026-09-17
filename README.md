@@ -1,57 +1,68 @@
 # Claude Community Amsterdam
 
-A static landing page with a mailing list signup form. It's hosted on GitHub Pages, and sign-ups go straight to a [Mailcoach](https://www.mailcoach.app) email list. There's no server code and no build step.
+A static landing page with a mailing list signup form. It's hosted on Cloudflare Pages, and sign-ups go straight to a [Mailcoach](https://www.mailcoach.app) email list. There's no server code and no build step.
+
+Everything that gets published lives in `public/`. The files in the repository root (this README, `DESIGN.md`) are not deployed.
 
 ## How it works
 
-The form in `index.html` sends a plain HTML POST to Mailcoach. Mailcoach adds the subscriber and redirects the browser to one of these pages:
+The form in `public/index.html` sends a plain HTML POST to Mailcoach. Mailcoach adds the subscriber and redirects the browser to one of these pages:
 
 | Page | When |
 |---|---|
-| `confirm.html` | Double opt-in is on and the confirmation email has been sent |
-| `thanks.html` | Subscribed right away (the form only redirects here when double opt-in is off) |
-| `already-subscribed.html` | The email address is already on the list |
+| `/confirm` | Double opt-in is on and the confirmation email has been sent |
+| `/thanks` | Subscribed right away (the form only redirects here when double opt-in is off) |
+| `/already-subscribed` | The email address is already on the list |
 
-## Setup
+Cloudflare Pages serves `confirm.html` at `/confirm` and redirects `/confirm.html` there, so the form uses the short URLs.
 
-### 1. Fill in the placeholders
+The Mailcoach subscribe URL and the three return URLs are set in `public/index.html`.
 
-| Placeholder | Where | Example |
-|---|---|---|
-| `{{MAILCOACH_DOMAIN}}` | `index.html` | `yourteam.mailcoach.app` |
-| `{{LIST_UUID}}` | `index.html` | UUID of your Mailcoach email list |
-| `{{SITE_DOMAIN}}` | `index.html` (3×), `CNAME` | `meetups.example.com` |
-
-```sh
-grep -rn '{{' --include='*.html' --include=CNAME .
-```
-
-### 2. Configure the Mailcoach list
+## Mailcoach list settings
 
 In your list settings, open the **Onboarding** tab:
 
 - Turn on **Allow POST from an external form**.
 - Keep **double opt-in** on. It's the main protection against bots, because anyone can POST to the subscribe URL directly.
-- If the list settings have a landing URL for after subscribing, set it to `https://{{SITE_DOMAIN}}/thanks.html`. Subscribers who click the confirmation link then land on this site instead of Mailcoach's default page.
+- If the list settings have a landing URL for after subscribing, set it to `https://claudecommunity.amsterdam/thanks`. Subscribers who click the confirmation link then land on this site instead of Mailcoach's default page.
 
 The form also has a hidden honeypot field. A small script blocks the submit when that field is filled in, which catches simple form-filling bots.
 
-### 3. Publish on GitHub Pages
+## Deploy on Cloudflare Pages
 
-1. Push this folder to a GitHub repository.
-2. Go to **Settings → Pages** and pick **Deploy from a branch**, then choose `main` and `/ (root)`.
-3. Point DNS at GitHub Pages:
-   - Subdomain (`meetups.example.com`): a `CNAME` record pointing to `<your-username>.github.io`
-   - Apex domain (`example.com`): `A` records for `185.199.108.153`, `185.199.109.153`, `185.199.110.153` and `185.199.111.153`
-4. Once DNS resolves, turn on **Enforce HTTPS** in the Pages settings.
+### Connected to Git (automatic deploys)
+
+1. Push this repository to GitHub or GitLab.
+2. In the Cloudflare dashboard, go to **Workers & Pages → Create → Pages → Connect to Git** and pick the repository.
+3. Build settings:
+   - Framework preset: **None**
+   - Build command: leave empty
+   - Build output directory: `public`
+
+Every push to `main` deploys the site. Other branches and pull requests get preview URLs.
+
+### Direct upload (no Git)
+
+```sh
+npx wrangler pages deploy public --project-name claude-community-amsterdam
+```
+
+A Direct Upload project can't be switched to Git deploys later. You'd have to create a new project.
+
+### Custom domain
+
+`claudecommunity.amsterdam` is a root domain, and Pages only accepts those when Cloudflare runs the domain's DNS:
+
+1. Add the domain to Cloudflare (the free plan is enough) and change the nameservers at your registrar to the ones Cloudflare shows.
+2. In the Pages project, open **Custom domains → Set up a domain** and enter `claudecommunity.amsterdam`. Cloudflare issues the HTTPS certificate automatically.
 
 ## Local preview
 
 ```sh
-python3 -m http.server 8000
+npx wrangler pages dev public
 ```
 
-Then open http://localhost:8000. The form only works once the placeholders are filled in.
+This serves the site the way Cloudflare does, including the short `/thanks`-style URLs. `python3 -m http.server 8000 -d public` also works, but there you need the `.html` URLs.
 
 ## Design
 

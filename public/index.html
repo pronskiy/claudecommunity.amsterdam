@@ -29,7 +29,7 @@
       <p class="lead">Events in Amsterdam for people who build with Claude and Claude Code.</p>
       <p class="intro">Meetups, workshops, hackathons and more. Sign up and we'll email you when the next event is announced.</p>
 
-      <form class="subscribe" method="POST" action="https://{{MAILCOACH_DOMAIN}}/subscribe/{{LIST_UUID}}">
+      <form class="subscribe" method="POST" action="https://claude-community.mailcoach.app/subscribe/cb0d8dde-b321-42ac-b15e-17051e055539">
         <div class="field">
           <label class="ams-label" for="first_name">Name <span class="optional">(optional)</span></label>
           <input class="ams-text-input" id="first_name" name="first_name" type="text" autocomplete="name">
@@ -39,14 +39,18 @@
           <input class="ams-text-input" id="email" name="email" type="email" autocomplete="email" required aria-describedby="signup-note">
         </div>
 
+          <div style="display: none;">
+              <input type="text" id="lastname" name="lastname" />
+          </div>
+
         <div class="hp" aria-hidden="true">
           <label class="ams-label" for="website">Leave this field empty</label>
           <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
         </div>
 
-        <input type="hidden" name="redirect_after_subscribed" value="https://{{SITE_DOMAIN}}/thanks.html">
-        <input type="hidden" name="redirect_after_already_subscribed" value="https://{{SITE_DOMAIN}}/already-subscribed.html">
-        <input type="hidden" name="redirect_after_subscription_pending" value="https://{{SITE_DOMAIN}}/confirm.html">
+        <input type="hidden" name="redirect_after_subscribed" value="https://claudecommunity.amsterdam/thanks">
+        <input type="hidden" name="redirect_after_already_subscribed" value="https://claudecommunity.amsterdam/already-subscribed">
+        <input type="hidden" name="redirect_after_subscription_pending" value="https://claudecommunity.amsterdam/confirm">
 
         <button class="ams-button ams-button--primary" type="submit">Get community updates</button>
         <p class="note" id="signup-note">Unsubscribe anytime.</p>

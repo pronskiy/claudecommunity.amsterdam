@@ -10,7 +10,7 @@ copy, Mailcoach endpoint, field names, honeypot, and return pages are preserved.
 The design uses the system font Arial, which is the Amsterdam Design System's
 fallback, and keeps the same light appearance as the reference website.
 
-`assets/vendor/amsterdam/forms.css` contains the official label, text-input, and
+`public/assets/vendor/amsterdam/forms.css` contains the official label, text-input, and
 button components from `@amsterdam/design-system-css` 4.4.0 (EUPL-1.2).
 `styles.css` supplies local component tokens and page layout. Vendor provenance
 and the complete license are included alongside the CSS. The proprietary
