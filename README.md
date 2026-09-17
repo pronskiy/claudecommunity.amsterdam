@@ -52,3 +52,13 @@ python3 -m http.server 8000
 ```
 
 Then open http://localhost:8000. The form only works once the placeholders are filled in.
+
+## Design
+
+The page follows Gemeente Amsterdam's straightforward web style: white surfaces,
+red branding, bold headings, blue actions, and rectangular form controls.
+It uses the official open-source Amsterdam Design System form CSS with local
+styling and the system font Arial. The design is fixed and has no generated
+artwork, custom-font downloads, animation, or randomness.
+
+See [DESIGN.md](DESIGN.md) for references and the component license.
