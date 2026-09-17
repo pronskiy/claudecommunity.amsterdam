@@ -63,3 +63,10 @@ styling and the system font Arial. The design is fixed and has no generated
 artwork, custom-font downloads, animation, or randomness.
 
 See [DESIGN.md](DESIGN.md) for references and the component license.
+
+## License
+
+The site's own code is MIT licensed, see [LICENSE](LICENSE). Two things in this repository are not covered by it:
+
+- `public/assets/vendor/amsterdam/` contains form CSS from the Amsterdam Design System, licensed under the EUPL-1.2. Its own licence sits next to it.
+- The event photos in `public/assets/images/` belong to the photographers who took them.
