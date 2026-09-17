@@ -1,0 +1,12 @@
+{
+  "name": "claudecommunity-amsterdam",
+  "compatibility_date": "2026-09-17",
+  "workers_dev": true,
+  "preview_urls": true,
+  "assets": {
+    "directory": "./public"
+  },
+  "routes": [
+    { "pattern": "claudecommunity.amsterdam", "custom_domain": true }
+  ]
+}

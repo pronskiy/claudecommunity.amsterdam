@@ -1,6 +1,6 @@
 # Claude Community Amsterdam
 
-A static landing page with a mailing list signup form. It's hosted on Cloudflare Pages, and sign-ups go straight to a [Mailcoach](https://www.mailcoach.app) email list. There's no server code and no build step.
+A static landing page with a mailing list signup form. It's hosted on Cloudflare Workers (static assets only), and sign-ups go straight to a [Mailcoach](https://www.mailcoach.app) email list. There's no server code and no build step.
 
 Everything that gets published lives in `public/`. The files in the repository root (this README, `DESIGN.md`) are not deployed.
 
@@ -14,7 +14,7 @@ The form in `public/index.html` sends a plain HTML POST to Mailcoach. Mailcoach 
 | `/thanks` | Subscribed right away (the form only redirects here when double opt-in is off) |
 | `/already-subscribed` | The email address is already on the list |
 
-Cloudflare Pages serves `confirm.html` at `/confirm` and redirects `/confirm.html` there, so the form uses the short URLs.
+Cloudflare serves `confirm.html` at `/confirm` and redirects `/confirm.html` there, so the form uses the short URLs.
 
 The Mailcoach subscribe URL and the three return URLs are set in `public/index.html`.
 
@@ -28,38 +28,28 @@ In your list settings, open the **Onboarding** tab:
 
 The form also has a hidden honeypot field. A small script blocks the submit when that field is filled in, which catches simple form-filling bots.
 
-## Deploy on Cloudflare Pages
+## Deploy on Cloudflare
 
-### Connected to Git (automatic deploys)
+The Worker is configured in `wrangler.jsonc`: it serves the files in `public/`, has no server code, and is attached to `claudecommunity.amsterdam`.
 
-1. Push this repository to GitHub or GitLab.
-2. In the Cloudflare dashboard, go to **Workers & Pages → Create → Pages → Connect to Git** and pick the repository.
-3. Build settings:
-   - Framework preset: **None**
-   - Build command: leave empty
-   - Build output directory: `public`
+### Automatic deploys from GitHub
 
-Every push to `main` deploys the site. Other branches and pull requests get preview URLs.
+The Worker `claudecommunity-amsterdam` is connected to this repository in the Cloudflare dashboard (**Workers & Pages → claudecommunity-amsterdam → Settings → Build**). Every push to `main` runs `npx wrangler deploy` and publishes the site. Other branches get preview URLs.
 
-### Direct upload (no Git)
+### Manual deploy
 
 ```sh
-npx wrangler pages deploy public --project-name claude-community-amsterdam
+npx wrangler deploy
 ```
-
-A Direct Upload project can't be switched to Git deploys later. You'd have to create a new project.
 
 ### Custom domain
 
-`claudecommunity.amsterdam` is a root domain, and Pages only accepts those when Cloudflare runs the domain's DNS:
-
-1. Add the domain to Cloudflare (the free plan is enough) and change the nameservers at your registrar to the ones Cloudflare shows.
-2. In the Pages project, open **Custom domains → Set up a domain** and enter `claudecommunity.amsterdam`. Cloudflare issues the HTTPS certificate automatically.
+The domain's DNS is managed by Cloudflare. `wrangler deploy` attaches `claudecommunity.amsterdam` to the Worker and creates the DNS record itself. That only works when the domain has no other `A`, `AAAA` or `CNAME` record, so delete any old ones in **DNS → Records** first.
 
 ## Local preview
 
 ```sh
-npx wrangler pages dev public
+npx wrangler dev
 ```
 
 This serves the site the way Cloudflare does, including the short `/thanks`-style URLs. `python3 -m http.server 8000 -d public` also works, but there you need the `.html` URLs.
